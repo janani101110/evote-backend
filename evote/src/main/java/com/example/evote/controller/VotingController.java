@@ -24,6 +24,7 @@ import com.example.evote.dtos.LoginRequest;
 import com.example.evote.dtos.LoginResponse;
 import com.example.evote.dtos.NicValidationRequest;
 import com.example.evote.dtos.SetPasswordRequest;
+import com.example.evote.dtos.UserInfoResponse;
 import com.example.evote.dtos.VoteRequest;
 import com.example.evote.services.VotingService;
 
@@ -42,13 +43,14 @@ private JwtUtil jwtUtil;
 
     // Step 1: Validate NIC
     @PostMapping("/validate-nic")
-    public ResponseEntity<ApiResponse<User>> validateNic(@Valid @RequestBody NicValidationRequest request) {
-        User user = votingService.validateNic(request.getNic());
-        if (user != null) {
-            return ResponseEntity.ok(new ApiResponse<>(true, "NIC is valid", user));
-        }
-        return ResponseEntity.ok(new ApiResponse<>(false, "NIC is not eligible for voting"));
+public ResponseEntity<ApiResponse<UserInfoResponse>> validateNic(@Valid @RequestBody NicValidationRequest request) {
+    User user = votingService.validateNic(request.getNic());
+    if (user != null) {
+        return ResponseEntity.ok(new ApiResponse<>(true, "NIC is valid", new UserInfoResponse(user)));
     }
+    return ResponseEntity.ok(new ApiResponse<>(false, "NIC is not eligible for voting"));
+}
+
 
     // Step 2: Set Password
     @PostMapping("/set-password")
@@ -176,7 +178,6 @@ public ResponseEntity<ApiResponse<String>> castVote(
                 .body(new ApiResponse<>(false, "Invalid or expired token"));
     }
 
-    // Extract NIC from token, find the user, then cast vote
     String nic = jwtUtil.extractNic(token);
     User user = votingService.validateNic(nic);
     if (user == null) {
@@ -184,11 +185,11 @@ public ResponseEntity<ApiResponse<String>> castVote(
                 .body(new ApiResponse<>(false, "User not found"));
     }
 
-    boolean success = votingService.castVote(user.getId(), request.getCandidateId());
+    boolean success = votingService.castVotes(request.getUserId(), request.getCandidateIds());
     if (success) {
         return ResponseEntity.ok(new ApiResponse<>(true, "Vote cast successfully"));
     } else {
-        return ResponseEntity.ok(new ApiResponse<>(false, "Failed to cast vote or already voted"));
+        return ResponseEntity.ok(new ApiResponse<>(false, "Failed to vote or already voted"));
     }
 }
 

@@ -70,29 +70,32 @@ public class VotingService {
         return candidateRepository.findByDivisionIdAndIsActiveTrue(divisionId);
     }
 
-    public boolean castVote(Long userId, Long candidateId) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        Optional<Candidate> candidateOpt = candidateRepository.findById(candidateId);
+    public boolean castVotes(Long userId, List<Long> candidateIds) {
+    Optional<User> userOpt = userRepository.findById(userId);
 
-        if (userOpt.isPresent() && candidateOpt.isPresent()) {
-            User user = userOpt.get();
-            Candidate candidate = candidateOpt.get();
+    if (userOpt.isPresent()) {
+        User user = userOpt.get();
 
-            // Check if user has already voted
-            if (user.isHasVoted() || voteRepository.existsByUserId(userId)) {
-                return false;
-            }
-
-            // Cast vote
-            Vote vote = new Vote(user, candidate);
-            voteRepository.save(vote);
-
-            // Mark user as voted
-            user.setHasVoted(true);
-            userRepository.save(user);
-
-            return true;
+        // Check if already voted
+        if (user.isHasVoted() || voteRepository.existsByUserId(userId)) {
+            return false;
         }
-        return false;
+
+        for (Long candidateId : candidateIds) {
+            Optional<Candidate> candidateOpt = candidateRepository.findById(candidateId);
+            if (candidateOpt.isPresent()) {
+                Vote vote = new Vote(user, candidateOpt.get());
+                voteRepository.save(vote);
+            }
+        }
+
+        // Mark user as voted
+        user.setHasVoted(true);
+        userRepository.save(user);
+
+        return true;
     }
+    return false;
+}
+
 }
