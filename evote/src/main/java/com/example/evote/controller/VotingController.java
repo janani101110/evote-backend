@@ -126,38 +126,30 @@ public ResponseEntity<ApiResponse<Map<String, Object>>> login(@RequestBody Login
     // }
 @GetMapping("/candidates")
 public ResponseEntity<ApiResponse<List<CandidateResponse>>> getCandidates(
-        @RequestHeader("Authorization") String authHeader) {
+    @RequestHeader("Authorization") String authHeader) {
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-        return ResponseEntity.ok(new ApiResponse<>(false, "Missing or invalid token"));
+    return ResponseEntity.ok(new ApiResponse<>(false, "Missing or invalid token"));
     }
 
     String token = authHeader.substring(7);
     if (!jwtUtil.validateToken(token)) {
-        return ResponseEntity.ok(new ApiResponse<>(false, "Invalid token"));
+    return ResponseEntity.ok(new ApiResponse<>(false, "Invalid token"));
     }
 
-    String nic = jwtUtil.extractNic(token);
-    User user = votingService.validateNic(nic);
+    // No division constraint, fetch all candidates
+    List<Candidate> candidates = votingService.getAllCandidates();
 
-    if (user != null && user.getDivision() != null) {
-        List<Candidate> candidates = votingService.getCandidatesByDivision(user.getDivision().getId());
+    List<CandidateResponse> dtoList = candidates.stream().map(candidate ->
+    new CandidateResponse(
+        candidate.getId(),
+        candidate.getCandidateName(),
+        candidate.getPartyName(),
+        candidate.getCandidateCode()
+    )
+    ).toList();
 
-        List<CandidateResponse> dtoList = candidates.stream().map(candidate ->
-            new CandidateResponse(
-                candidate.getId(),
-                candidate.getCandidateName(),
-                candidate.getPartyName(),
-                candidate.getSymbol(),
-                candidate.getPhotoUrl(),
-                candidate.getDivision().getDivisionName()
-            )
-        ).toList();
-
-        return ResponseEntity.ok(new ApiResponse<>(true, "Candidates retrieved", dtoList));
-    }
-
-    return ResponseEntity.ok(new ApiResponse<>(false, "Unable to fetch candidates"));
+    return ResponseEntity.ok(new ApiResponse<>(true, "Candidates retrieved", dtoList));
 }
 
 

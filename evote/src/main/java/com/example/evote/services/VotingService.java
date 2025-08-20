@@ -66,8 +66,8 @@ public class VotingService {
         return null;
     }
 
-    public List<Candidate> getCandidatesByDivision(Long divisionId) {
-        return candidateRepository.findByDivisionIdAndIsActiveTrue(divisionId);
+   public List<Candidate> getAllCandidates(){
+        return candidateRepository.findAll();
     }
 
     public boolean castVotes(Long userId, List<Long> candidateIds) {
@@ -81,13 +81,13 @@ public class VotingService {
             return false;
         }
 
-        for (Long candidateId : candidateIds) {
-            Optional<Candidate> candidateOpt = candidateRepository.findById(candidateId);
-            if (candidateOpt.isPresent()) {
-                Vote vote = new Vote(user, candidateOpt.get());
-                voteRepository.save(vote);
-            }
+        for (int i = 0; i < candidateIds.size(); i++) {
+        Candidate candidate = candidateRepository.findById(candidateIds.get(i)).orElse(null);
+        if (candidate != null) {
+            Vote vote = new Vote(user, candidate, i + 1); // i+1 converts 0-based index to 1-based preference
+            voteRepository.save(vote);
         }
+    }
 
         // Mark user as voted
         user.setHasVoted(true);

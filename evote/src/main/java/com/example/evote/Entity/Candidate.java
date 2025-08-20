@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,24 +16,22 @@ public class Candidate {
 
     @Column(nullable = false)
     private String candidateName;
-
+    private String candidateCode;
     private String partyName;
-    private String symbol;
-    private String photoUrl;
+    
 
-    @ManyToOne
-    @JoinColumn(name = "division_id")
-    private Division division;
+    
 
     private boolean isActive = true;
 
     // Constructors
     public Candidate() {}
 
-    public Candidate(String candidateName, String partyName, Division division) {
+    public Candidate(String candidateName, String partyName, String candidateCode) {
         this.candidateName = candidateName;
         this.partyName = partyName;
-        this.division = division;
+        this.candidateCode = candidateCode;
+        
     }
 
     // Getters and Setters
@@ -48,14 +44,8 @@ public class Candidate {
     public String getPartyName() { return partyName; }
     public void setPartyName(String partyName) { this.partyName = partyName; }
 
-    public String getSymbol() { return symbol; }
-    public void setSymbol(String symbol) { this.symbol = symbol; }
-
-    public String getPhotoUrl() { return photoUrl; }
-    public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
-
-    public Division getDivision() { return division; }
-    public void setDivision(Division division) { this.division = division; }
+    public String getCandidateCode() {return candidateCode;}
+    public void setCandidateCode(String candidateCode) {this.candidateCode = candidateCode;}
 
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }

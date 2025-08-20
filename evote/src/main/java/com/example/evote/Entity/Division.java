@@ -1,7 +1,14 @@
 package com.example.evote.Entity;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "divisions")
@@ -19,8 +26,6 @@ public class Division {
     @OneToMany(mappedBy = "division")
     private List<User> voters;
 
-    @OneToMany(mappedBy = "division")
-    private List<Candidate> candidates;
 
     // Constructors
     public Division() {}
@@ -43,6 +48,4 @@ public class Division {
     public List<User> getVoters() { return voters; }
     public void setVoters(List<User> voters) { this.voters = voters; }
 
-    public List<Candidate> getCandidates() { return candidates; }
-    public void setCandidates(List<Candidate> candidates) { this.candidates = candidates; }
 }

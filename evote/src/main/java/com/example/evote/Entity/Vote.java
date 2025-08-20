@@ -25,14 +25,21 @@ public class Vote {
     @JoinColumn(name = "candidate_id")
     private Candidate candidate;
 
+    @ManyToOne
+    @JoinColumn(name = "division_id")
+    private Division division;
+    private int preferenceOrder;
+
     private LocalDateTime voteTime = LocalDateTime.now();
 
     // Constructors
     public Vote() {}
 
-    public Vote(User user, Candidate candidate) {
+    public Vote(User user, Candidate candidate,int preferenceOrder) {
         this.user = user;
         this.candidate = candidate;
+        this.division = user.getDivision();   
+        this.preferenceOrder = preferenceOrder;     
     }
 
     // Getters and Setters
@@ -47,5 +54,13 @@ public class Vote {
 
     public LocalDateTime getVoteTime() { return voteTime; }
     public void setVoteTime(LocalDateTime voteTime) { this.voteTime = voteTime; }
+
+    public Division getDivision() {return division;}
+    // public void setDivision(Division division){this.division = division;}
+
+    public int getPreferenceOrder() { return preferenceOrder; }
+    public void setPreferenceOrder(int preferenceOrder) { 
+        this.preferenceOrder = preferenceOrder; 
+    }
 }
 
