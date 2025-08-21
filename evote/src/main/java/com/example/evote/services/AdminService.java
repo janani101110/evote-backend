@@ -95,4 +95,15 @@ public class AdminService {
         adminRepo.save(a);
         log.info("Admin deactivated with ID: {}", id);
     }
+    public void activate(Long id) {
+        log.debug("activating admin with ID: {}", id);
+        Admin a = adminRepo.findById(id)
+            .orElseThrow(() -> {
+                log.error("Admin not found with ID: {}", id);
+                return new IllegalArgumentException("Admin not found");
+            });
+        a.setActive(true);
+        adminRepo.save(a);
+        log.info("Admin activated with ID: {}", id);
+    }
 }

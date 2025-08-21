@@ -29,7 +29,8 @@ public class VoterController {
         v.getId(),
         v.getNic(),
         v.getFullName(),
-        v.getDivision().getDivisionCode()
+        v.getDivision().getDivisionCode(),
+        v.isHasVoted()
     )).toList();
     }
 

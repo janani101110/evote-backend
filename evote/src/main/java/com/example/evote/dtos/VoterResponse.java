@@ -4,18 +4,21 @@ public class VoterResponse {
     private final long id;
     private final String nic;
     private final String fullName;
-    private final String divisionId;
+    private final String divisionCode;
+    private final boolean hasVoted;
 
-    public VoterResponse(Long id,String nic,String fullName, String divisionId){
+    public VoterResponse(Long id,String nic,String fullName, String divisionCode,boolean hasVoted){
         this.id = id;
         this.nic = nic;
         this.fullName = fullName;
-        this.divisionId = divisionId;
+        this.divisionCode = divisionCode;
+        this.hasVoted = hasVoted;
     }
 
     public Long getId() {return id;}
     public String getnic(){return  nic;}
     public String getfullName() {return fullName;}
-    public String getdivisionId() {return divisionId;}
+    public String getdivisionCode() {return divisionCode;}
+    public boolean ishasVoted() {return hasVoted;}
     
 }
