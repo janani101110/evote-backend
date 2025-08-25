@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.evote.Entity.Admin;
 import com.example.evote.dtos.AdminDtos.AdminResponse;
 import com.example.evote.dtos.AdminDtos.CreateAdminRequest;
+import com.example.evote.dtos.VoteRequest;
 import com.example.evote.services.AdminService;
+import com.example.evote.services.VotingService;
 
 import jakarta.validation.Valid;
 
@@ -23,11 +25,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/admin/super/admins")
 public class AdminManagementController {
 
+    private final VotingService votingService;
+
     private final AdminService adminService;
 
-    public AdminManagementController(AdminService adminService) {
+    public AdminManagementController(AdminService adminService,VotingService votingService) {
         this.adminService = adminService;
-    }
+        this.votingService = votingService;
+    };
 
     // ONLY SUPER ADMIN
     @PostMapping 
@@ -57,4 +62,11 @@ public class AdminManagementController {
     public void activate(@PathVariable Long id){
         adminService.activate(id);
     }
+
+@PostMapping("/vote/by-admin")
+@PreAuthorize("hasRole('DIVISIONAL_ADMIN')")
+public boolean castVotesByAdmin(@RequestBody VoteRequest request) {
+    return votingService.castVotes(request.getUserId(), request.getCandidateIds());
+}
+
 }

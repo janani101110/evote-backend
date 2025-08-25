@@ -24,6 +24,7 @@ public class CandidateController {
     public CandidateController(CandidateService service){ this.service=service; }
 
     @GetMapping
+    
     public List<CandidateResponse> list() {
         return service.list().stream()
             .map(c -> new CandidateResponse(

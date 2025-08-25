@@ -106,4 +106,5 @@ public class AdminService {
         adminRepo.save(a);
         log.info("Admin activated with ID: {}", id);
     }
+    
 }

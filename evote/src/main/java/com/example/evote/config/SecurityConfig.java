@@ -54,10 +54,11 @@ public class SecurityConfig {
                 
                 // Admin endpoints 
                 .requestMatchers("/api/admin/super/admins").hasRole("SUPER_ADMIN")
-                .requestMatchers("/api/admin/candidates").hasRole("SUPER_ADMIN")
+                .requestMatchers("/api/admin/candidates").hasAnyRole("SUPER_ADMIN","DIVISIONAL_ADMIN")
                 .requestMatchers("/api/admin/divisions").hasRole("SUPER_ADMIN")
                 .requestMatchers("/api/admin/voters").hasRole("SUPER_ADMIN")
                 .requestMatchers("/api/admin/results/election").hasRole("SUPER_ADMIN")
+                .requestMatchers("/api/admin/super/admins/vote").hasRole("DIVISIONAL_ADMIN")
                 
                 .anyRequest().authenticated()
             )
